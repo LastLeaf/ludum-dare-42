@@ -1,0 +1,3 @@
+[submodule "glayout"]
+	path = glayout
+	url = git@github.com:LastLeaf/glayout.git

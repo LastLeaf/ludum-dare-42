@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>glayout Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @font-face {
+      font-family: 'Muli';
+      font-style: normal;
+      font-weight: normal;
+      src: local('Muli Regular'), local('Muli-Regular'),
+           url('resources/fonts/muli-v11-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+           url('resources/fonts/muli-v11-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    }
+    body {
+      font-family: "Muli";
+      margin: 0;
+    }
+    #loading {
+      color: #888;
+      position: fixed;
+      font-size: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    Loading...
+  </div>
+  <div id="wrapper">
+    <canvas glayout="0" width="1280" height="720"></canvas>
+  </div>
+  <script src="bin/glayout.js"></script>
+  <script>
+    document.body.removeChild(document.getElementById('loading'));
+    __glayoutLib__.setLogLevelNum(-1);
+  </script>
+</body>

@@ -1,0 +1,9 @@
+[package]
+name = "src"
+version = "0.1.0"
+authors = ["LastLeaf <bqfu@163.com>"]
+
+[dependencies]
+
+[dependencies.glayout]
+path = "glayout/asm"
