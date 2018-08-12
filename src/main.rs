@@ -2,6 +2,8 @@
 extern crate glayout;
 
 mod game;
+mod level;
+mod levels;
 
 lib_define_callback!(Init () {
     fn callback(&mut self, _: i32, _: i32, _: i32, _: i32) -> bool {

@@ -2,34 +2,38 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use glayout::frame;
 use glayout::canvas::{Canvas, CanvasContext};
-use glayout::canvas::element::{Element, Empty, Image, Text};
-use glayout::canvas::element::style::{DisplayType, PositionType};
+
+use super::level;
 
 struct MainLoop {
     _canvas: Canvas,
     ctx: Rc<RefCell<CanvasContext>>,
+    rel_time: f64,
+    level_status: i32,
+    level_controller: Option<level::LevelController>,
 }
 
 impl frame::Frame for MainLoop {
     fn frame(&mut self, timestamp: f64) -> bool {
         let mut context = self.ctx.borrow_mut();
-        let root = context.root();
 
-        if context.touching() {
-            match root.elem().node_under_point(context.touch_point()) {
-                Some(x) => {
-                    println!("Touching: {:?}", x.elem().style().get_id());
-                },
-                None => {
-                    println!("Touching nothing");
-                }
-            }
+        if self.level_status < 0 {
+            // game just started
+            self.level_status = 0;
+        }
+        if self.level_controller.is_none() {
+            self.rel_time = timestamp;
+            self.level_controller = Some(level::LevelController::new(self.level_status, &mut context));
+        }
+        let frame_ret = self.level_controller.as_mut().unwrap().frame(&mut context, timestamp - self.rel_time);
+        if frame_ret >= 0 {
+            self.level_status = frame_ret;
+            self.rel_time = timestamp;
+            self.level_controller = Some(level::LevelController::new(self.level_status, &mut context));
         }
 
-        let f = context.node_by_id("f").unwrap();
-        f.elem().style_mut().transform_mut().reset().offset(timestamp / 1000. % 4. * 400., 0.);
+        // force redraw every frame
         context.redraw();
-
         return true;
     }
 }
@@ -41,61 +45,14 @@ pub fn init() {
     canvas.ctx(|context| {
         let pixel_ratio = context.device_pixel_ratio();
         context.set_canvas_size(1280, 720, pixel_ratio);
-        context.set_clear_color(0., 0., 0., 1.);
-
-        let elem = {
-            let cfg = context.canvas_config();
-            let elem = element! {
-                [&cfg] Empty {
-                    font_family: String::from("\"Muli\"");
-                    Text {
-                        id: String::from("a");
-                        position: PositionType::Absolute;
-                        left: 10.;
-                        top: 10.;
-                        width: 50.;
-                        set_text("Absolute Positioning");
-                    };
-                    color: (0., 0., 1., 0.5);
-                    Empty {
-                        id: String::from("b");
-                        display: DisplayType::Block;
-                        position: PositionType::Absolute;
-                        top: 100.;
-                        left: 200.;
-                        Text {
-                            id: String::from("c");
-                            font_size: 24.;
-                            set_text("LARGE TEXT");
-                        };
-                        Image {
-                            id: String::from("d");
-                            width: 400.;
-                            height: 400.;
-                            load("resources/test.png");
-                        };
-                    };
-                    Empty {
-                        id: String::from("e");
-                        position: PositionType::Absolute;
-                        top: 100.;
-                        left: 200.;
-                        Text {
-                            id: String::from("f");
-                            font_size: 16.;
-                            set_text("hahaha");
-                        };
-                    };
-                }
-            };
-            elem
-        };
-        let mut root_elem = context.root();
-        root_elem.append(elem);
+        context.set_clear_color(0.25, 0.25, 0.25, 1.);
     });
 
     frame::bind(Rc::new(RefCell::new(MainLoop {
         _canvas: canvas,
         ctx,
+        rel_time: 0.,
+        level_status: -1,
+        level_controller: None,
     })), frame::FramePriority::Normal);
 }
