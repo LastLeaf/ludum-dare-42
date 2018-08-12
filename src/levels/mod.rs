@@ -14,6 +14,7 @@ mod m;
 
 #[derive(Clone)]
 pub struct LevelData {
+    pub audio: i32,
     pub words: &'static str,
     pub width: i32,
     pub height: i32,

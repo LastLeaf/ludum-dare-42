@@ -2,6 +2,7 @@ use super::LevelData;
 
 pub fn data() -> LevelData {
     LevelData {
+        audio: 2,
         words: "Just like the day she came.",
         width: 6,
         height: 4,

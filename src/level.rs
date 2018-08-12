@@ -5,6 +5,7 @@ use glayout::canvas::{CanvasContext};
 use glayout::canvas::element::{Element, Empty, Image, Text, Transform, ImageLoader};
 use glayout::canvas::element::style::{DisplayType, PositionType};
 
+use super::play_audio;
 use super::levels;
 use levels::LevelData;
 
@@ -81,6 +82,7 @@ impl LevelController {
         let mut root = context.root();
         let cfg = context.canvas_config();
         let data = levels::get_level_data(num).unwrap();
+        unsafe { play_audio(data.audio); }
 
         // basic size
         let block_size_with_padding = 540. / data.height as f64;
