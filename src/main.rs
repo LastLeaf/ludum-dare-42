@@ -2,6 +2,7 @@
 extern crate glayout;
 
 mod game;
+mod cover;
 mod level;
 mod levels;
 
@@ -13,7 +14,7 @@ lib_define_callback!(Init () {
 });
 
 pub fn main() {
-    lib!(timeout(3000, lib_callback!(Init())));
+    lib!(timeout(0, lib_callback!(Init())));
     glayout::init();
     glayout::main_loop();
 }

@@ -2,7 +2,7 @@ use super::LevelData;
 
 pub fn data() -> LevelData {
     LevelData {
-        words: "Every morning I left my room for work.",
+        words: "Sometimes I needed to move some objects.",
         width: 4,
         height: 5,
         exit: (2, 3),
@@ -11,8 +11,8 @@ pub fn data() -> LevelData {
             0, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0,
-            9, 1, 0, 0,
-            1, 1, 0, 0,
+            9, 1, 4, 0,
+            1, 1, 1, 2,
         ]
     }
 }
