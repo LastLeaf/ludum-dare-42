@@ -28,6 +28,15 @@ impl CoverController {
                 top: 0.;
                 width: 1280.;
                 height: 720.;
+                Text {
+                    position: PositionType::Absolute;
+                    left: 400.;
+                    top: 680.;
+                    height: 24.;
+                    font_size: 16.;
+                    color: (0.6, 0.6, 0.6, 1.);
+                    set_text("A game for Ludum Dare 42 by LastLeaf");
+                };
                 Image {
                     id: String::from("me_0");
                     position: PositionType::Absolute;
@@ -35,7 +44,7 @@ impl CoverController {
                     top: 150.;
                     width: 300.;
                     height: 300.;
-                    set_loader(image_loaders[1].clone());
+                    set_loader(image_loaders[if is_replay { 5 } else { 1 }].clone());
                 };
                 Image {
                     id: String::from("me_1");
@@ -45,12 +54,12 @@ impl CoverController {
                     top: 150.;
                     width: 300.;
                     height: 300.;
-                    set_loader(image_loaders[2].clone());
+                    set_loader(image_loaders[if is_replay { 5 } else { 2 }].clone());
                 };
                 Text {
                     position: PositionType::Absolute;
                     left: 400.;
-                    top: 540.;
+                    top: 500.;
                     height: 300.;
                     font_size: 36.;
                     set_text("Leaving Room");
@@ -59,7 +68,7 @@ impl CoverController {
                     id: String::from("wrapper");
                     position: PositionType::Absolute;
                     left: 400.;
-                    top: 600.;
+                    top: 560.;
                     width: 150.;
                     height: 40.;
                     color: (0.5, 0.7, 0.8, 1.);
@@ -100,7 +109,7 @@ impl CoverController {
         // touch handling
         if context.touching() {
             let p = context.touch_point();
-            if p.0 < 400. || p.0 >= 400. + 150. || p.1 < 600. || p.1 >= 600. + 40. {
+            if p.0 < 400. || p.0 >= 400. + 150. || p.1 < 560. || p.1 >= 560. + 40. {
                 /* do nothing */
             } else {
                 context.root().remove(0);

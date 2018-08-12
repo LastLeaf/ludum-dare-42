@@ -2,6 +2,7 @@ use super::LevelData;
 
 pub fn data() -> LevelData {
     LevelData {
+        audio: 2,
         words: "But my heart is still filled up with her love.",
         width: 6,
         height: 6,

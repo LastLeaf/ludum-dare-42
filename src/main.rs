@@ -6,6 +6,10 @@ mod cover;
 mod level;
 mod levels;
 
+extern {
+    pub fn play_audio(index: i32);
+}
+
 lib_define_callback!(Init () {
     fn callback(&mut self, _: i32, _: i32, _: i32, _: i32) -> bool {
         game::init();
