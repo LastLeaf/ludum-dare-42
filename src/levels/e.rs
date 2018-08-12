@@ -3,7 +3,7 @@ use super::LevelData;
 pub fn data() -> LevelData {
     LevelData {
         audio: 0,
-        words: "Sometimes there was a disaster.",
+        words: "Sometimes it was a disaster.",
         width: 4,
         height: 5,
         exit: (2, 2),

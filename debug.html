@@ -22,6 +22,16 @@
       position: fixed;
       font-size: 32px;
     }
+    #canvas {
+      position: fixed;
+      width: 1280px;
+      height: 720px;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
   </style>
 </head>
 <body>
@@ -29,7 +39,7 @@
     Loading...
   </div>
   <div id="wrapper">
-    <canvas glayout="0" width="1280" height="720"></canvas>
+    <canvas id="canvas" glayout="0" width="1280" height="720"></canvas>
   </div>
   <div>
     <audio loop preload id="audio_1">
