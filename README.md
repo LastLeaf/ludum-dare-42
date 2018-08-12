@@ -6,7 +6,7 @@ A puzzle game for [Ludum Dare 42](https://ldjam.com/events/ludum-dare/42) compo,
 
 Control the main character to leave the room.
 
-There are 10+ levels with puzzles, and a simple story about the room.
+There are 10+ levels with puzzles, and a simple story about the room and love.
 
 It is a small puzzle game inspired by [Klotski](https://en.wikipedia.org/wiki/Klotski). However, it is totally different from Klotski due to the gravity. Please reconsider your strategy if you ever played Klotski.
 
