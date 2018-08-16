@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::cmp;
 use glayout::frame;
 use glayout::canvas::{Canvas, CanvasContext};
 use glayout::canvas::element::{Element, Empty, Image, Text, Transform, ImageLoader};
@@ -26,6 +27,8 @@ struct MainLoop {
 impl frame::Frame for MainLoop {
     fn frame(&mut self, timestamp: f64) -> bool {
         let mut context = self.ctx.borrow_mut();
+        let canvas_size = context.canvas_size();
+        let vertical_mode = canvas_size.1 >= canvas_size.0;
 
         if self.level_status == LOADING {
             // initial interface
@@ -36,8 +39,8 @@ impl frame::Frame for MainLoop {
                     [&cfg] Text {
                         font_family: String::from("sans-serif");
                         position: PositionType::Absolute;
-                        left: 400.;
-                        top: 600.;
+                        left: if vertical_mode { 120. } else { 400. };
+                        top: if vertical_mode { 900. } else { 600. };
                         font_size: 24.;
                         color: (0.6, 0.6, 0.6, 1.);
                         set_text("Loading...");
@@ -111,8 +114,25 @@ pub fn init() {
 
     canvas.ctx(|context| {
         let pixel_ratio = context.device_pixel_ratio();
-        context.set_canvas_size(1280, 720, pixel_ratio);
+        let (w, h) = context.window_size();
+        context.set_canvas_size(w, h, pixel_ratio);
         context.set_clear_color(0.25, 0.25, 0.25, 1.);
+        let vertical_mode = h >= w;
+        let scale = (1 as f64).min(
+            if vertical_mode {
+                (w as f64 / 720.).min(h as f64 / 1280.)
+            } else {
+                (w as f64 / 1280.).min(h as f64 / 720.)
+            }
+        );
+        let (offset_w, offset_h) = if vertical_mode {
+            ((w as f64 - 720. * scale) / 2., (h as f64 - 1280. * scale) / 2.)
+        } else {
+            ((w as f64 - 1280. * scale) / 2., (h as f64 - 720. * scale) / 2.)
+        };
+        println!("Canvas size ({}, {}) offset ({}, {}) scale {} vertical {:?}", w, h, offset_w, offset_h, scale, vertical_mode);
+        let root = context.root();
+        root.elem().style_mut().transform_mut().offset(offset_w, offset_h).scale(scale, scale);
     });
 
     let context = canvas.context();

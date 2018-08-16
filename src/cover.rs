@@ -7,6 +7,7 @@ use glayout::canvas::element::style::{DisplayType, PositionType};
 
 pub struct CoverController {
     wrapper_node: TreeNodeRc<Element>,
+    play_wrapper_node: TreeNodeRc<Element>,
 
     me_node: (TreeNodeRc<Element>, TreeNodeRc<Element>),
     me_node_state: i32,
@@ -15,6 +16,8 @@ pub struct CoverController {
 impl CoverController {
     pub fn new(is_replay: bool, image_loaders: &Vec<Rc<RefCell<ImageLoader>>>, context: &mut CanvasContext) -> Self {
         let mut root = context.root();
+        let canvas_size = context.canvas_size();
+        let vertical_mode = canvas_size.1 >= canvas_size.0;
         let cfg = context.canvas_config();
 
         // basic structure
@@ -24,13 +27,13 @@ impl CoverController {
                 font_family: String::from("Muli");
                 position: PositionType::Absolute;
                 opacity: 1.;
-                left: 0.;
-                top: 0.;
+                left: if vertical_mode { 120. } else { 400. };
+                top: if vertical_mode { 280. } else { 0. };
                 width: 1280.;
                 height: 720.;
                 Text {
                     position: PositionType::Absolute;
-                    left: 400.;
+                    left: 0.;
                     top: 680.;
                     height: 24.;
                     font_size: 16.;
@@ -40,7 +43,7 @@ impl CoverController {
                 Image {
                     id: String::from("me_0");
                     position: PositionType::Absolute;
-                    left: 400.;
+                    left: 0.;
                     top: 150.;
                     width: 300.;
                     height: 300.;
@@ -50,7 +53,7 @@ impl CoverController {
                     id: String::from("me_1");
                     display: DisplayType::None;
                     position: PositionType::Absolute;
-                    left: 400.;
+                    left: 0.;
                     top: 150.;
                     width: 300.;
                     height: 300.;
@@ -58,16 +61,16 @@ impl CoverController {
                 };
                 Text {
                     position: PositionType::Absolute;
-                    left: 400.;
+                    left: 0.;
                     top: 500.;
                     height: 300.;
                     font_size: 36.;
                     set_text("Leaving Room");
                 };
                 Empty {
-                    id: String::from("wrapper");
+                    id: String::from("play_wrapper");
                     position: PositionType::Absolute;
-                    left: 400.;
+                    left: 0.;
                     top: 560.;
                     width: 150.;
                     height: 40.;
@@ -85,10 +88,12 @@ impl CoverController {
         };
         root.append(elem);
         let wrapper_node = context.node_by_id("wrapper").unwrap();
+        let play_wrapper_node = context.node_by_id("play_wrapper").unwrap();
         let me_node = (context.node_by_id("me_0").unwrap(), context.node_by_id("me_1").unwrap());
 
         Self {
             wrapper_node,
+            play_wrapper_node,
 
             me_node,
             me_node_state: 0,
@@ -109,11 +114,15 @@ impl CoverController {
         // touch handling
         if context.touching() {
             let p = context.touch_point();
-            if p.0 < 400. || p.0 >= 400. + 150. || p.1 < 560. || p.1 >= 560. + 40. {
-                /* do nothing */
-            } else {
-                context.root().remove(0);
-                return 0;
+            let n = context.root().elem().node_under_point(p);
+            match n {
+                Some(ref n) => {
+                    if TreeNodeRc::ptr_eq(n, &self.play_wrapper_node) || TreeNodeRc::ptr_eq(n, &self.play_wrapper_node.parent().unwrap()) {
+                        context.root().remove(0);
+                        return 0;
+                    }
+                },
+                _ => { }
             }
         }
 

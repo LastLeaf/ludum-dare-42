@@ -80,20 +80,37 @@ pub struct LevelController {
 impl LevelController {
     pub fn new(num: i32, image_loaders: &Vec<Rc<RefCell<ImageLoader>>>, context: &mut CanvasContext) -> Self {
         let mut root = context.root();
+        let canvas_size = context.canvas_size();
+        let vertical_mode = canvas_size.1 >= canvas_size.0;
         let cfg = context.canvas_config();
         let data = levels::get_level_data(num).unwrap();
         unsafe { play_audio(data.audio); }
 
         // basic size
-        let block_size_with_padding = 540. / data.height as f64;
-        let block_size = block_size_with_padding - 10.;
-        let total_width = block_size_with_padding * data.width as f64 - 10.;
-        let main_area = (
-            (1280. - total_width) / 2.,
-            70.,
-            total_width,
-            block_size_with_padding * data.height as f64 - 10.,
-        );
+        let block_size_with_padding;
+        let block_size;
+        let main_area;
+        if vertical_mode {
+            block_size_with_padding = 630. / data.width as f64;
+            block_size = block_size_with_padding - 10.;
+            let total_height = block_size_with_padding * data.height as f64 - 10.;
+            main_area = (
+                50.,
+                (1280. - total_height) / 2.,
+                block_size_with_padding * data.width as f64 - 10.,
+                total_height,
+            );
+        } else {
+            block_size_with_padding = 540. / data.height as f64;
+            block_size = block_size_with_padding - 10.;
+            let total_width = block_size_with_padding * data.width as f64 - 10.;
+            main_area = (
+                (1280. - total_width) / 2.,
+                70.,
+                total_width,
+                block_size_with_padding * data.height as f64 - 10.,
+            );
+        }
 
         // exit position
         let exit_pos = match data.exit_direction {
@@ -101,7 +118,7 @@ impl LevelController {
                 (-30., data.exit.1 as f64 * block_size_with_padding)
             },
             "right" => {
-                (total_width + 10., data.exit.1 as f64 * block_size_with_padding)
+                (main_area.2 + 10., data.exit.1 as f64 * block_size_with_padding)
             },
             _ => {
                 panic!();
@@ -161,7 +178,7 @@ impl LevelController {
                 Empty {
                     position: PositionType::Absolute;
                     left: main_area.0 - 30.;
-                    top: 655.;
+                    top: main_area.1 + main_area.3 + 125.;
                     Text {
                         id: String::from("words");
                         color: (0.5, 0.7, 0.8, 1.);
@@ -507,7 +524,11 @@ impl LevelController {
             match self.touch_target {
                 None => {
                     // start move
-                    let new_touch_point = context.touch_point();
+                    let root = context.root();
+                    let p = context.touch_point();
+                    let s = root.elem().style();
+                    let t = s.transform_ref();
+                    let new_touch_point = (p.0 / t.get_scale().0 - t.get_offset().0, p.1 / t.get_scale().1 - t.get_offset().1);
                     let touch_x = new_touch_point.0 - self.main_area.0;
                     let touch_y = new_touch_point.1 - self.main_area.1;
                     for i in 0..self.objects.len() {
@@ -528,7 +549,11 @@ impl LevelController {
                 },
                 Some(touch_target) => {
                     // continue move
-                    let new_touch_point = context.touch_point();
+                    let root = context.root();
+                    let p = context.touch_point();
+                    let s = root.elem().style();
+                    let t = s.transform_ref();
+                    let new_touch_point = (p.0 / t.get_scale().0 - t.get_offset().0, p.1 / t.get_scale().1 - t.get_offset().1);
                     let moving_delta = (
                         new_touch_point.0 - self.latest_touch_point.0,
                         new_touch_point.1 - self.latest_touch_point.1,
