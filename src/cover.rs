@@ -36,7 +36,8 @@ impl CoverController {
                     left: 0.;
                     top: 680.;
                     height: 24.;
-                    font_size: 16.;
+                    width: 1280.;
+                    font_size: if vertical_mode { 24. } else { 16. };
                     color: (0.6, 0.6, 0.6, 1.);
                     set_text("A game for Ludum Dare 42 by LastLeaf");
                 };
@@ -64,23 +65,23 @@ impl CoverController {
                     left: 0.;
                     top: 500.;
                     height: 300.;
-                    font_size: 36.;
+                    font_size: if vertical_mode { 48. } else { 36. };
                     set_text("Leaving Room");
                 };
                 Empty {
                     id: String::from("play_wrapper");
                     position: PositionType::Absolute;
                     left: 0.;
-                    top: 560.;
-                    width: 150.;
-                    height: 40.;
+                    top: if vertical_mode { 570. } else { 560. };
+                    width: if vertical_mode { 200. } else { 150. };
+                    height: if vertical_mode { 58. } else { 40. };
                     color: (0.5, 0.7, 0.8, 1.);
                     background_color: (0.4, 0.4, 0.4, 1.);
                     Text {
                         position: PositionType::Absolute;
                         left: 20.;
                         top: 2.;
-                        font_size: 24.;
+                        font_size: if vertical_mode { 36. } else { 24. };
                         set_text(if is_replay { "Replay >" } else { "Play >" });
                     };
                 };
@@ -117,7 +118,7 @@ impl CoverController {
             let n = context.root().elem().node_under_point(p);
             match n {
                 Some(ref n) => {
-                    if TreeNodeRc::ptr_eq(n, &self.play_wrapper_node) || TreeNodeRc::ptr_eq(n, &self.play_wrapper_node.parent().unwrap()) {
+                    if TreeNodeRc::ptr_eq(n, &self.play_wrapper_node) || TreeNodeRc::ptr_eq(&n.parent().unwrap(), &self.play_wrapper_node) {
                         context.root().remove(0);
                         return 0;
                     }

@@ -178,11 +178,12 @@ impl LevelController {
                 Empty {
                     position: PositionType::Absolute;
                     left: main_area.0 - 30.;
-                    top: main_area.1 + main_area.3 + 125.;
+                    top: main_area.1 + main_area.3 + 45.;
+                    width: 1280.;
                     Text {
                         id: String::from("words");
                         color: (0.5, 0.7, 0.8, 1.);
-                        font_size: 24.;
+                        font_size: if vertical_mode { 30. } else { 24. };
                         set_text(data.words);
                     };
                 };
