@@ -529,7 +529,7 @@ impl LevelController {
                     let p = context.touch_point();
                     let s = root.elem().style();
                     let t = s.transform_ref();
-                    let new_touch_point = (p.0 / t.get_scale().0 - t.get_offset().0, p.1 / t.get_scale().1 - t.get_offset().1);
+                    let new_touch_point = ((p.0 - t.get_offset().0) / t.get_scale().0, (p.1 - t.get_offset().1) / t.get_scale().1);
                     let touch_x = new_touch_point.0 - self.main_area.0;
                     let touch_y = new_touch_point.1 - self.main_area.1;
                     for i in 0..self.objects.len() {
@@ -554,7 +554,7 @@ impl LevelController {
                     let p = context.touch_point();
                     let s = root.elem().style();
                     let t = s.transform_ref();
-                    let new_touch_point = (p.0 / t.get_scale().0 - t.get_offset().0, p.1 / t.get_scale().1 - t.get_offset().1);
+                    let new_touch_point = ((p.0 - t.get_offset().0) / t.get_scale().0, (p.1 - t.get_offset().1) / t.get_scale().1);
                     let moving_delta = (
                         new_touch_point.0 - self.latest_touch_point.0,
                         new_touch_point.1 - self.latest_touch_point.1,
