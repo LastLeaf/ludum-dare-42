@@ -94,7 +94,7 @@ impl frame::Frame for MainLoop {
 
 fn start_loading(context: &mut CanvasContext) -> Vec<Rc<RefCell<ImageLoader>>> {
     vec![
-        "resources/lastleaf.png",
+        "resources/me.png",
         "resources/me.png",
         "resources/me_1.png",
         "resources/she.png",
