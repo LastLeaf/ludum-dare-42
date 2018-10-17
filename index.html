@@ -58,5 +58,14 @@
   <script src="bin/glayout.min.js"></script>
   <script>
     document.body.removeChild(document.getElementById('loading'));
+    window.addEventListener('touchstart', function() {
+      return false;
+    }, false);
+    window.addEventListener('touchmove', function() {
+      return false;
+    }, false);
+    window.addEventListener('touchend', function() {
+      return false;
+    }, false);
   </script>
 </body>
