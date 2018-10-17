@@ -94,7 +94,7 @@ impl frame::Frame for MainLoop {
 
 fn start_loading(context: &mut CanvasContext) -> Vec<Rc<RefCell<ImageLoader>>> {
     vec![
-        "resources/me.png",
+        "resources/lastleaf.jpg",
         "resources/me.png",
         "resources/me_1.png",
         "resources/she.png",
@@ -114,7 +114,11 @@ pub fn init() {
 
     canvas.ctx(|context| {
         let pixel_ratio = context.device_pixel_ratio();
-        let (w, h) = context.window_size();
+        let (mut w, mut h) = context.window_size();
+        if w <= 1 && h <= 1 {
+            w = 1280;
+            h = 720;
+        }
         context.set_canvas_size(w, h, pixel_ratio);
         context.set_clear_color(0.25, 0.25, 0.25, 1.);
         let vertical_mode = h >= w;

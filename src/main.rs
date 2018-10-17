@@ -6,8 +6,8 @@ mod cover;
 mod level;
 mod levels;
 
-pub fn play_audio(_index: i32) {
-    // TODO
+extern {
+    pub fn play_audio(index: i32);
 }
 
 fn run() {
